@@ -25,7 +25,7 @@ def receive():
         for item in clients:
             if address == item[1]:
                 nickname = item[0]
-                m = f'{nickname}:{data.decode("utf-8")}'
+                m = f'{nickname}:{data.decode("utf-8")}\n'
                 broadcast(m, address)
                 flag = False
                 break
