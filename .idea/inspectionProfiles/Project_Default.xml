@@ -1,0 +1,34 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="1">
+            <item index="0" class="java.lang.String" itemvalue="submit" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="state_machine.Pizza.start_tr" />
+          <option value="state_machine.Pizza.state" />
+          <option value="state_machine.Pizza.size_tr" />
+          <option value="state_machine.Pizza.payment_tr" />
+          <option value="state_machine.Pizza.check_tr" />
+          <option value="state_machine.Pizza.tr_start" />
+          <option value="state_machine.Pizza.is_size_selection" />
+          <option value="state_machine.Pizza.tr_size" />
+          <option value="state_machine.Pizza.tr_payment" />
+          <option value="state_machine.Pizza.is_payment_method" />
+          <option value="state_machine.Pizza.is_check_order" />
+          <option value="state_machine.Pizza.tr_check" />
+          <option value="women.models.Women.objects" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
