@@ -1,42 +1,64 @@
 import socket
+import threading
 
-HOST = '127.0.0.1'
-PORT = 9099
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind((HOST, PORT))
+host = '127.0.0.1'
+port = 9099
 
-clients = set()
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind((host, port))
+server.listen(10)
 
-print('Start server')
+clients = []
+nicknames = []
+
+print('start_server')
 
 
-def broadcast(message, address):
-    for item in clients:
-        if item[1] == address:
+def broadcast(message, exception_client=None):
+    for client in clients:
+        if client == exception_client:
             continue
         else:
-            sock.sendto(message.encode('utf-8'), item[1])
+            client.send(message)
+
+
+def handle(client):
+    flag_for_nickname = True
+    while True:
+        try:
+            message = client.recv(1024)
+        except:
+            index = clients.index(client)
+            clients.remove(client)
+            client.close()
+            nickname = nicknames[index]
+            mess = f'{nickname} отключился от сервера\n'
+            print(mess)
+            broadcast(mess.encode('utf-8'), client)
+            nicknames.remove(nickname)
+            break
+        else:
+            if flag_for_nickname:
+                flag_for_nickname = False
+                nickname = message.decode('utf-8')
+                nicknames.append(nickname)
+                mess = f'\n{nickname} подключился к серверу'
+                print(mess)
+                broadcast(mess.encode('utf-8'))
+            else:
+                index = clients.index(client)
+                nickname = nicknames[index]
+                mess = f'\n{nickname}:{message.decode("utf-8")}'
+                broadcast(mess.encode('utf-8'), exception_client=client)
 
 
 def receive():
     while True:
-        data, address = sock.recvfrom(1024)
-        flag = True
-        for item in clients:
-            if address == item[1]:
-                nickname = item[0]
-                m = f'{nickname}:{data.decode("utf-8")}\n'
-                broadcast(m, address)
-                flag = False
-                break
-            else:
-                continue
-        if len(clients) == 0 or flag:
-            clients.add((data.decode('utf-8'), address))
-            m = f'\n{data.decode("utf-8")} подключился к серверу'
-            print(m)
-            sock.sendto('Вы подключились к серверу'.encode('utf-8'), address)
-            broadcast(m, address)
+        client, addr = server.accept()
+        clients.append(client)
+        thr = threading.Thread(target=handle, args=(client,))
+        thr.start()
 
 
 receive()
+
