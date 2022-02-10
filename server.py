@@ -31,11 +31,16 @@ def handle(client):
             index = clients.index(client)
             clients.remove(client)
             client.close()
-            nickname = nicknames[index]
-            mess = f'{nickname} отключился от сервера\n'
-            print(mess)
-            broadcast(mess.encode('utf-8'), client)
-            nicknames.remove(nickname)
+            if len(nicknames) != 0:
+                nickname = nicknames[index]
+                nicknames.remove(nickname)
+                mess = f'{nickname} отключился от сервера\n'
+                print(mess)
+                broadcast(mess.encode('utf-8'), client)
+            else:
+                mess = 'Пользователь отключился от сервера, не введя свой никнейм'
+                print(mess)
+
             break
         else:
             if flag_for_nickname:
