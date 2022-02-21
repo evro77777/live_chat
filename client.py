@@ -6,15 +6,26 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.bind(('', 0))
 client.connect(server)
 
-
-def read_sock():
-    while True:
-        data = client.recv(1024)
-        print(f'{data.decode("utf-8")}')
-
-
 nickname = input('\nEnter nickname: ')
 client.send(nickname.encode('utf-8'))
+
+
+def read_sock():
+    global nickname
+    flag = False
+    while True:
+        data = client.recv(1024).decode('utf-8')
+        # in case if the nickname is already in the nicknames
+        if data == 'Try again.\n':
+            flag = True
+            print(f'{data}')
+            nickname = 'Enter nickname'
+        elif 'nickname=' in data and flag:
+            nickname = data.split('=')[-1]
+        else:
+            print(f'{data}')
+
+
 thr1 = threading.Thread(target=read_sock)
 thr1.start()
 

@@ -31,7 +31,7 @@ def handle(client):
             index = clients.index(client)
             clients.remove(client)
             client.close()
-            if len(nicknames) != 0:
+            if len(nicknames) != 0 and not flag_for_nickname:
                 nickname = nicknames[index]
                 nicknames.remove(nickname)
                 mess = f'{nickname} отключился от сервера\n'
@@ -44,12 +44,17 @@ def handle(client):
             break
         else:
             if flag_for_nickname:
-                flag_for_nickname = False
                 nickname = message.decode('utf-8')
-                nicknames.append(nickname)
-                mess = f'\n{nickname} подключился к серверу'
-                print(mess)
-                broadcast(mess.encode('utf-8'))
+                if nickname not in nicknames:
+                    flag_for_nickname = False
+                    nicknames.append(nickname)
+                    mess = f'\n{nickname} подключился к серверу'
+                    print(mess)
+                    client.send(f'nickname={nickname}'.encode('utf-8'))
+                    broadcast(mess.encode('utf-8'))
+                else:
+                    mess = 'Try again.\n'
+                    client.send(mess.encode('utf-8'))
             else:
                 index = clients.index(client)
                 nickname = nicknames[index]
